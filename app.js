@@ -2706,6 +2706,11 @@ function initResourceFinder() {
 
     document.querySelectorAll('.duration-btn').forEach(btn => {
         btn.addEventListener('click', () => {
+            // Remove active class from all other duration buttons
+            document.querySelectorAll('.duration-btn').forEach(b => b.classList.remove('active'));
+            // Add active class to clicked button
+            btn.classList.add('active');
+
             const startInput = document.getElementById("alloc-start");
             const endInput = document.getElementById("alloc-end");
 
@@ -2723,6 +2728,20 @@ function initResourceFinder() {
             endInput.value = endDate.toISOString().split('T')[0];
         });
     });
+
+    // Clear highlight if dates are changed manually
+    const startInput = document.getElementById("alloc-start");
+    const endInput = document.getElementById("alloc-end");
+    if (startInput) {
+        startInput.addEventListener('change', () => {
+            document.querySelectorAll('.duration-btn').forEach(b => b.classList.remove('active'));
+        });
+    }
+    if (endInput) {
+        endInput.addEventListener('change', () => {
+            document.querySelectorAll('.duration-btn').forEach(b => b.classList.remove('active'));
+        });
+    }
 
     document.querySelectorAll('[data-res-tab="allocate"]').forEach(btn => {
         btn.addEventListener("click", () => {
