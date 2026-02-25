@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resource Tracker - Staffing & Utilization Dashboard</title>
+    <meta name="description"
+        content="Staffing Skill Management and Resource Utilization Dashboard for Media Analytics MMM">
+    <link rel="stylesheet" href="styles.css?v=40">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">📊</span>
+                    <span class="logo-text">Resource Tracker</span>
+                </div>
+                <button id="sidebar-toggle" class="sidebar-toggle" title="Toggle Sidebar">
+                    <span class="toggle-icon">❮</span>
+                </button>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-view="overview">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-label">Overview</span>
+                </a>
+                <a href="#" class="nav-item" data-view="projects">
+                    <span class="nav-icon">📁</span>
+                    <span class="nav-label">Projects</span>
+                </a>
+                <a href="#" class="nav-item" data-view="timeline">
+                    <span class="nav-icon">📅</span>
+                    <span class="nav-label">Project Deepdive</span>
+                </a>
+                <a href="#" class="nav-item" data-view="resources">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-label">Resources</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="main-header">
+                <div class="header-left">
+                    <button id="mobile-toggle" class="mobile-toggle" title="Open Menu">☰</button>
+                    <h1 id="page-title">Overview</h1>
+                    <p id="page-subtitle">Staffing Skill Management & Resource Utilization</p>
+                </div>
+                <div class="header-right">
+
+                    <div id="product-filter-container" style="display: none;">
+                        <select id="product-type-filter-native"
+                            style="background-color: transparent; border: 1px solid rgba(0,0,0,0.15); border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; color: var(--text-primary); outline: none; padding: 4px 8px;">
+                            <option value="">All Products</option>
+                        </select>
+                    </div>
+
+                    <button id="add-project-btn" class="add-project-btn" title="Add New Project">
+                        <span class="btn-icon">+</span>
+                        <span class="btn-text">Add Project</span>
+                    </button>
+                    <button id="add-employee-btn" class="add-project-btn" title="Add New Employee">
+                        <span class="btn-icon">+</span>
+                        <span class="btn-text">Add Employee</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Add Project Modal -->
+            <div id="add-project-modal" class="modal-overlay">
+                <div class="modal-container">
+                    <div class="modal-header">
+                        <h2>Add New Project</h2>
+                        <button class="modal-close" id="modal-project-close-btn">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="add-project-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="maconomy-id">Maconomy ID *</label>
+                                    <input type="text" id="maconomy-id" placeholder="e.g., PRJ001" required
+                                        maxlength="15">
+                                </div>
+                                <div class="form-group">
+                                    <label for="project-name">Project Name *</label>
+                                    <input type="text" id="project-name" placeholder="e.g., 3M, 7-Eleven, AB Foods"
+                                        required maxlength="20">
+                                </div>
+                            </div>
+                            <div class="form-group full-width" style="margin-bottom: 12px;">
+                                <label for="model-id">Model ID *</label>
+                                <input type="text" id="model-id" placeholder="e.g., MDL0001" required maxlength="100">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="model-type">Model Type *</label>
+                                    <select id="model-type" required>
+                                        <option value="">Select Type</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="model-stage">Model Stage *</label>
+                                    <select id="model-stage" required>
+                                        <option value="">Select Stage</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="project-status">Project Status *</label>
+                                    <select id="project-status" required>
+                                        <option value="Confirmed">Confirmed</option>
+                                        <option value="Pipeline">Pipeline</option>
+                                        <option value="Completed">Completed</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="complexity">Complexity *</label>
+                                    <select id="complexity" required>
+                                        <option value="">Select Complexity</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- Overall Project Dates Section -->
+                            <div
+                                style="margin: 15px 0 10px 0; padding-top: 10px; border-top: 1px solid var(--border-color);">
+                                <strong
+                                    style="font-size: 11px; color: var(--accent-purple); text-transform: uppercase; letter-spacing: 0.5px;">Overall
+                                    Project Dates</strong>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="start-date">Planned Start *</label>
+                                    <input type="date" id="start-date" required min="2022-01-01" max="2032-12-31">
+                                </div>
+                                <div class="form-group">
+                                    <label for="end-date">Planned End *</label>
+                                    <input type="date" id="end-date" required min="2022-01-01" max="2032-12-31">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="actual-start">Actual Start <button type="button"
+                                            class="btn-same-as-planned" onclick="copyPlannedToActual('overall')">Same as
+                                            planned</button></label>
+                                    <input type="date" id="actual-start" min="2022-01-01" max="2032-12-31">
+                                </div>
+                                <div class="form-group">
+                                    <label for="actual-end">Actual End</label>
+                                    <input type="date" id="actual-end" min="2022-01-01" max="2032-12-31">
+                                </div>
+                            </div>
+
+                            <!-- Data Dates Section -->
+                            <div
+                                style="margin: 15px 0 10px 0; padding-top: 10px; border-top: 1px solid var(--border-color);">
+                                <strong
+                                    style="font-size: 11px; color: var(--accent-purple); text-transform: uppercase; letter-spacing: 0.5px;">Data
+                                    Phase Dates</strong>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="data-start">Planned Start</label>
+                                    <input type="date" id="data-start" min="2022-01-01" max="2032-12-31">
+                                </div>
+                                <div class="form-group">
+                                    <label for="data-end">Planned End</label>
+                                    <input type="date" id="data-end" min="2022-01-01" max="2032-12-31">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="data-actual-start">Actual Start <button type="button"
+                                            class="btn-same-as-planned" onclick="copyPlannedToActual('data')">Same as
+                                            planned</button></label>
+                                    <input type="date" id="data-actual-start" min="2022-01-01" max="2032-12-31">
+                                </div>
+                                <div class="form-group">
+                                    <label for="data-actual-end">Actual End</label>
+                                    <input type="date" id="data-actual-end" min="2022-01-01" max="2032-12-31">
+                                </div>
+                            </div>
+
+                            <!-- Model Dates Section -->
+                            <div
+                                style="margin: 15px 0 10px 0; padding-top: 10px; border-top: 1px solid var(--border-color);">
+                                <strong
+                                    style="font-size: 11px; color: var(--accent-purple); text-transform: uppercase; letter-spacing: 0.5px;">Model
+                                    Phase Dates</strong>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="model-start">Planned Start</label>
+                                    <input type="date" id="model-start" min="2022-01-01" max="2032-12-31">
+                                </div>
+                                <div class="form-group">
+                                    <label for="model-end">Planned End</label>
+                                    <input type="date" id="model-end" min="2022-01-01" max="2032-12-31">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="model-actual-start">Actual Start <button type="button"
+                                            class="btn-same-as-planned" onclick="copyPlannedToActual('model')">Same as
+                                            planned</button></label>
+                                    <input type="date" id="model-actual-start" min="2022-01-01" max="2032-12-31">
+                                </div>
+                                <div class="form-group">
+                                    <label for="model-actual-end">Actual End</label>
+                                    <input type="date" id="model-actual-end" min="2022-01-01" max="2032-12-31">
+                                </div>
+                            </div>
+                            <div class="form-group full-width" style="margin-top: 4px;">
+                                <label for="project-lead">Project Lead</label>
+                                <input type="text" id="project-lead" placeholder="e.g., John Doe">
+                            </div>
+                            <div class="form-actions" style="margin-top: 20px;">
+                                <button type="button" class="btn-secondary" id="cancel-project-btn">Cancel</button>
+                                <button type="submit" class="btn-primary">Create Project</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Employee Modal -->
+            <div id="add-employee-modal" class="modal-overlay">
+                <div class="modal-container">
+                    <div class="modal-header">
+                        <h2>Add New Employee</h2>
+                        <button class="modal-close" id="modal-employee-close-btn">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="add-employee-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="emp-name">Name *</label>
+                                    <input type="text" id="emp-name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="emp-manager">Manager *</label>
+                                    <input type="text" id="emp-manager" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="emp-role">Role *</label>
+                                    <select id="emp-role" required>
+                                        <option value="">Select Role</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="emp-join-date">HAI Joining Date *</label>
+                                    <input type="date" id="emp-join-date" required min="2022-01-01">
+                                </div>
+                            </div>
+                            <div class="form-group full-width">
+                                <h3>Skills</h3>
+                                <div class="form-row" id="emp-skills-container">
+                                    <!-- Skills dropdowns will be populated here -->
+                                </div>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="emp-projects">Current Projects</label>
+                                <input type="text" id="emp-projects" placeholder="e.g., 3M, Tesco (Optional)">
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn-secondary" id="cancel-employee-btn">Cancel</button>
+                                <button type="submit" class="btn-primary">Add Employee</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Overview View -->
+                <section id="view-overview" class="view active">
+                    <div class="stats-grid">
+                        <div class="stat-card gradient-purple">
+                            <div class="stat-icon">👥</div>
+                            <div class="stat-content">
+                                <span class="stat-value" id="total-resources">0</span>
+                                <span class="stat-label">Total Resources</span>
+                            </div>
+                        </div>
+                        <div class="stat-card gradient-blue">
+                            <div class="stat-icon">✅</div>
+                            <div class="stat-content">
+                                <span class="stat-value" id="allocated-resources">0</span>
+                                <span class="stat-label">Allocated to Projects</span>
+                            </div>
+                        </div>
+                        <div class="stat-card gradient-green">
+                            <div class="stat-icon">🎓</div>
+                            <div class="stat-content">
+                                <span class="stat-value" id="hai-trained">0</span>
+                                <span class="stat-label">HAI Trained</span>
+                            </div>
+                        </div>
+                        <div class="stat-card gradient-orange">
+                            <div class="stat-icon">📊</div>
+                            <div class="stat-content">
+                                <span class="stat-value" id="utilization-rate">0%</span>
+                                <span class="stat-label">Utilization Rate</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="charts-row">
+                        <div class="chart-card">
+                            <h3>Role Distribution</h3>
+                            <div class="chart-container" id="role-chart"></div>
+                        </div>
+                        <div class="chart-card">
+                            <h3>Skill Level Distribution</h3>
+                            <div class="chart-container" id="skill-chart"></div>
+                        </div>
+                        <div class="chart-card">
+                            <h3>Business Health Summary (RAG)</h3>
+                            <div class="chart-container" id="health-distribution-chart"></div>
+                        </div>
+                    </div>
+
+                    <div class="charts-row">
+                        <div class="chart-card">
+                            <h3>Organizational Capacity (Quarterly)</h3>
+                            <div class="chart-container" id="capacity-forecast-chart"></div>
+                        </div>
+                        <div class="chart-card">
+                            <h3>Competency Gaps & Training Needs</h3>
+                            <div class="chart-container" id="competency-gap-chart"></div>
+                        </div>
+                    </div>
+
+                    <div class="charts-row">
+                        <div class="chart-card wide">
+                            <h3>Platform Capacity Overview</h3>
+                            <div class="capacity-bars" id="capacity-overview"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Resources View (Merged) -->
+                <section id="view-resources" class="view">
+                    <div class="cockpit-tabs" style="margin-bottom: 8px;">
+                        <button data-res-tab="allocate" class="cockpit-tab active">Find your Resource</button>
+                        <button class="cockpit-tab" data-res-tab="team">Team Overview</button>
+                        <button class="cockpit-tab" data-res-tab="skills">Skill Inventory</button>
+                    </div>
+
+                    <div id="res-tab-allocate" class="cockpit-view active">
+                        <div class="allocation-container">
+                            <form id="allocate-resource-form">
+                                <div id="allocate-step1-content">
+                                    <div class="allocation-body">
+                                        <div id="allocate-resource-form-step1">
+                                            <!-- SKILL FILTER SECTION -->
+                                            <h3 class="section-title">Filter your resource by skills</h3>
+
+                                            <div class="res-form-row row-first">
+                                                <div class="form-group" style="width: 150px; flex-shrink: 0;">
+                                                    <label for="alloc-product-type">Product Type</label>
+                                                    <select id="alloc-product-type"
+                                                        style="height: 26px; padding: 2px 8px; width: 100%;">
+                                                        <option value="">Any</option>
+                                                        <option value="hai">HAI</option>
+                                                        <option value="athena">Athena</option>
+                                                        <option value="custom">Custom</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group" id="alloc-model-type-group"
+                                                    style="width: 150px; flex-shrink: 0;">
+                                                    <label for="alloc-skill-type">Model Type</label>
+                                                    <select id="alloc-skill-type"
+                                                        style="height: 26px; padding: 2px 8px; width: 100%;">
+                                                        <option value="">Any</option>
+                                                        <option value="haiSales">HAI Sales</option>
+                                                        <option value="haiDI">HAI D/I</option>
+                                                        <option value="haiLT">HAI LT</option>
+                                                        <option value="haiPF">HAI PF</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group" style="width: 150px; flex-shrink: 0;">
+                                                    <label for="alloc-role">Role *</label>
+                                                    <select id="alloc-role"
+                                                        style="height: 26px; padding: 2px 8px; width: 100%;" required>
+                                                        <option value="">Select Role</option>
+                                                        <option>DMM</option>
+                                                        <option>DMM/PL</option>
+                                                        <option>Data Analyst</option>
+                                                        <option>Lead</option>
+                                                        <option>Modeler</option>
+                                                        <option>Non MMM</option>
+                                                        <option>PL</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group" style="width: 150px; flex-shrink: 0;">
+                                                    <label for="alloc-skill-level">Skill Level</label>
+                                                    <select id="alloc-skill-level"
+                                                        style="height: 26px; padding: 2px 8px; width: 100%;" disabled>
+                                                        <option value="">Select Model First</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="res-form-row row-second">
+                                                <div class="form-group" style="width: 150px; flex-shrink: 0;">
+                                                    <label for="alloc-hrs">Hours / Week *</label>
+                                                    <input type="number" id="alloc-hrs" placeholder="e.g. 20"
+                                                        style="height: 26px; padding: 2px 8px; width: 100%; box-sizing: border-box;"
+                                                        required />
+                                                </div>
+
+                                                <div class="form-group" style="width: 150px; flex-shrink: 0;">
+                                                    <label for="alloc-start">Start Date *</label>
+                                                    <input type="date" id="alloc-start" required
+                                                        style="height: 26px; padding: 2px 8px; width: 100%; box-sizing: border-box;" />
+                                                </div>
+                                                <div class="form-group" style="width: 150px; flex-shrink: 0;">
+                                                    <label for="alloc-end">End Date *</label>
+                                                    <input type="date" id="alloc-end" required
+                                                        style="height: 26px; padding: 2px 8px; width: 100%; box-sizing: border-box;" />
+                                                </div>
+
+                                                <div class="shortcut-group"
+                                                    style="display: flex; align-items: center; gap: 12px; margin-bottom: 0;">
+                                                    <div class="or-separator"
+                                                        style="font-size: 11px; font-weight: 600; color: #94a3b8; margin-bottom: 2px;">
+                                                        OR</div>
+
+                                                    <div class="duration-shortcuts"
+                                                        style="display: flex; gap: 8px; align-items: center;">
+                                                        <button type="button" class="duration-btn capsule-btn"
+                                                            data-weeks="4">Next 4w &rarr;</button>
+                                                        <button type="button" class="duration-btn capsule-btn"
+                                                            data-weeks="8">Next 8w &rarr;</button>
+                                                        <button type="button" class="duration-btn capsule-btn"
+                                                            data-weeks="10">Next 10w &rarr;</button>
+                                                    </div>
+
+                                                    <button type="button" class="btn-primary" id="btn-get-resource"
+                                                        style="white-space: nowrap; height: 26px; padding: 0 16px; font-size: 12px;">Find
+                                                        Resources</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div style="display: flex; justify-content: flex-end; margin-bottom: 8px;">
+                                            <div class="view-toggle-container"
+                                                style="flex-wrap: nowrap; display: flex; align-items: center; gap: 8px;">
+                                                <span class="view-toggle-label" style="white-space: nowrap;">Weekly
+                                                    Breakdown:</span>
+                                                <label class="switch">
+                                                    <input type="checkbox" id="resource-view-toggle">
+                                                    <span class="slider round"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <!-- RESOURCE LIST POP AREA -->
+                                        <div id="resource-results-wrapper">
+                                            <div id="resource-results" class="resource-results"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- Team Sub-View -->
+                    <div id="res-tab-team" class="cockpit-view">
+                        <div class="filter-bar">
+                            <select id="manager-filter">
+                                <option value="all">All Managers</option>
+                            </select>
+                            <select id="role-filter">
+                                <option value="all">All Roles</option>
+                            </select>
+                        </div>
+                        <div class="team-grid" id="team-grid"></div>
+                    </div>
+
+                    <!-- Skills Sub-View -->
+                    <div id="res-tab-skills" class="cockpit-view">
+                        <div class="skill-matrix-container">
+                            <h3>Skills Matrix</h3>
+                            <div class="table-wrapper">
+                                <table class="data-table" id="skills-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Manager</th>
+                                            <th>Role</th>
+                                            <th>HAI Trained</th>
+                                            <th>HAI Sales</th>
+                                            <th>HAI D/I</th>
+                                            <th>HAI LT</th>
+                                            <th>HAI PF</th>
+                                            <th>Athena</th>
+                                            <th>Custom</th>
+                                        </tr>
+                                        <tr class="filter-row">
+                                            <th><select id="skill-filter-name" class="column-filter">
+                                                    <option value="">All</option>
+                                                </select></th>
+                                            <th><select id="skill-filter-manager" class="column-filter">
+                                                    <option value="">All</option>
+                                                </select></th>
+                                            <th><select id="skill-filter-role" class="column-filter">
+                                                    <option value="">All</option>
+                                                </select></th>
+                                            <th><select id="skill-filter-trained" class="column-filter">
+                                                    <option value="">All</option>
+                                                </select></th>
+                                            <th><select id="skill-filter-sales" class="column-filter">
+                                                    <option value="">All</option>
+                                                </select></th>
+                                            <th><select id="skill-filter-di" class="column-filter">
+                                                    <option value="">All</option>
+                                                </select></th>
+                                            <th><select id="skill-filter-lt" class="column-filter">
+                                                    <option value="">All</option>
+                                                </select></th>
+                                            <th><select id="skill-filter-pf" class="column-filter">
+                                                    <option value="">All</option>
+                                                </select></th>
+                                            <th><select id="skill-filter-athena" class="column-filter">
+                                                    <option value="">All</option>
+                                                </select></th>
+                                            <th><select id="skill-filter-custom" class="column-filter">
+                                                    <option value="">All</option>
+                                                </select></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="skills-tbody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="charts-row">
+                            <div class="chart-card">
+                                <h3>Training Status</h3>
+                                <div class="donut-chart" id="training-chart"></div>
+                            </div>
+                            <div class="chart-card">
+                                <h3>Platform Skill Coverage</h3>
+                                <div class="bar-chart" id="platform-skill-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Projects View -->
+                <section id="view-projects" class="view">
+                    <div id="projects-table-wrapper">
+                        <table class="data-table" id="projects-table">
+                            <thead>
+                                <tr>
+                                    <th class="toggle-col sticky-col sticky-col-0"></th>
+                                    <th class="resizable-th sticky-col sticky-col-1" data-col="maconomy-id">
+                                        <div class="th-content"><span>MACONOMY ID</span></div>
+                                        <span class="resize-handle"></span>
+                                    </th>
+                                    <th class="resizable-th sticky-col sticky-col-2" data-col="project-name">
+                                        <div class="th-content"><span>PROJECT NAME</span></div>
+                                        <span class="resize-handle"></span>
+                                    </th>
+                                    <th class="resizable-th" data-col="model-id">
+                                        <div class="th-content"><span>MODEL ID</span></div>
+                                        <span class="resize-handle"></span>
+                                    </th>
+                                    <th data-col="model-type">
+                                        <div class="th-content"><span>MODEL TYPE</span></div>
+                                    </th>
+                                    <th>
+                                        <div class="th-content"><span>MODEL STAGE</span></div>
+                                    </th>
+                                    <th>
+                                        <div class="th-content"><span>PROJECT STATUS</span></div>
+                                    </th>
+                                    <th>
+                                        <div class="th-content"><span>COMPLEXITY</span></div>
+                                    </th>
+                                    <th>
+                                        <div class="th-content"><span>PLANNED START</span></div>
+                                    </th>
+                                    <th>
+                                        <div class="th-content"><span>PLANNED END</span></div>
+                                    </th>
+                                    <th>
+                                        <div class="th-content"><span>ACTUAL START</span></div>
+                                    </th>
+                                    <th>
+                                        <div class="th-content"><span>ACTUAL END</span></div>
+                                    </th>
+                                    <th>
+                                        <div class="th-content"><span>PROJECT LEAD</span></div>
+                                    </th>
+                                    <th>
+                                        <div class="th-content"><span>HEALTH</span></div>
+                                    </th>
+                                </tr>
+                                <tr class="filter-row">
+                                    <th class="sticky-col sticky-col-0"></th>
+                                    <th class="sticky-col sticky-col-1">
+                                        <select id="filter-maconomy-id" class="column-filter">
+                                            <option value="">All</option>
+                                        </select>
+                                    </th>
+                                    <th class="sticky-col sticky-col-2">
+                                        <select id="filter-project-name" class="column-filter">
+                                            <option value="">All</option>
+                                        </select>
+                                    </th>
+                                    <th>
+                                        <select id="filter-model-id" class="column-filter">
+                                            <option value="">All</option>
+                                        </select>
+                                    </th>
+                                    <th>
+                                        <select id="filter-model-type" class="column-filter">
+                                            <option value="">All</option>
+                                        </select>
+                                    </th>
+                                    <th>
+                                        <select id="filter-model-stage" class="column-filter">
+                                            <option value="">All</option>
+                                        </select>
+                                    </th>
+                                    <th>
+                                        <select id="filter-prodstatus" class="column-filter">
+                                            <option value="">All</option>
+                                        </select>
+                                    </th>
+                                    <th>
+                                        <select id="filter-complexity" class="column-filter">
+                                            <option value="">All</option>
+                                        </select>
+                                    </th>
+                                    <th>
+                                        <select id="filter-start-date" class="column-filter">
+                                            <option value="">All</option>
+                                        </select>
+                                    </th>
+                                    <th>
+                                        <select id="filter-end-date" class="column-filter">
+                                            <option value="">All</option>
+                                        </select>
+                                    </th>
+                                    <th>
+                                        <select id="filter-actual-start" class="column-filter">
+                                            <option value="">All</option>
+                                        </select>
+                                    </th>
+                                    <th>
+                                        <select id="filter-actual-end" class="column-filter">
+                                            <option value="">All</option>
+                                        </select>
+                                    </th>
+                                    <th>
+                                        <select id="filter-lead" class="column-filter">
+                                            <option value="">All</option>
+                                        </select>
+                                    </th>
+                                    <th>
+                                        <select id="filter-health" class="column-filter">
+                                            <option value="">All</option>
+                                        </select>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="projects-list-tbody">
+                                <!-- Project list items will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+                <section id="view-timeline" class="view">
+                    <div class="cockpit-tabs">
+                        <button class="cockpit-tab active" data-cockpit="gantt">Project Gantt</button>
+                        <button class="cockpit-tab" data-cockpit="allocation">Employee View</button>
+                    </div>
+
+                    <div style="margin-bottom: 12px; display: flex; align-items: center;">
+                        <label for="timeline-project-filter"
+                            style="margin-right: 10px; font-size: 13px; color: var(--text-secondary);">Filter
+                            Project/Model:</label>
+                        <select id="timeline-project-filter" class="column-filter" style="width: 200px;">
+                            <option value="">All Projects</option>
+                        </select>
+                    </div>
+
+                    <div id="cockpit-gantt" class="cockpit-view active">
+                        <div class="allocation-container">
+                            <div class="allocation-grid-wrapper">
+                                <div id="gantt-grid" class="allocation-grid">
+                                    <!-- Gantt rendered here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="cockpit-allocation" class="cockpit-view">
+                        <div class="allocation-container">
+                            <div class="allocation-grid-wrapper">
+                                <div id="allocation-grid" class="allocation-grid">
+                                    <!-- 52-week allocation grid rendered here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js?v=38"></script>
+    <!-- <script src="app.projects-product-patch.js"></script> -->
+</body>
+
+</html>
