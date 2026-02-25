@@ -2063,6 +2063,13 @@ body {
     background: rgba(139, 92, 246, 0.1);
 }
 
+.capsule-btn.active {
+    background: rgba(139, 92, 246, 0.15) !important;
+    border-color: var(--accent-purple) !important;
+    color: var(--accent-purple) !important;
+    font-weight: 600 !important;
+}
+
 .duration-shortcuts {
     display: flex;
     gap: 8px;
