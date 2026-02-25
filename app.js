@@ -40,14 +40,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function loadData() {
     try {
         // Add timestamp to bust cache
-        const response = await fetch('/api/data?v=' + Date.now());
+        // Fetch static data.json instead of /api/data for GitHub Pages compatibility
+        const response = await fetch('data.json?v=' + Date.now());
         if (!response.ok) throw new Error('Failed to load data');
         appState.data = await response.json();
         console.log('Data loaded:', appState.data.summary);
         console.log('First project models:', appState.data.projects?.[0]?.models);
     } catch (error) {
         console.error('Error loading data:', error);
-        showError('Failed to load data. Please run the Python script first.');
+        showError('Failed to load data. Ensure data.json exists in the project root.');
     }
 }
 
@@ -58,8 +59,9 @@ function showError(message) {
         <div class="error-message" style="text-align: center; padding: 60px; color: var(--accent-red);">
             <h2>⚠️ Error</h2>
             <p>${message}</p>
-            <p style="color: var(--text-muted); margin-top: 20px;">
-                Run: <code style="background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 4px;">python read_excel.py</code>
+            <p style="color: var(--text-muted); margin-top: 20px; font-size: 0.9em;">
+                <strong>Local:</strong> Run <code>python read_excel.py</code> to generate data.<br>
+                <strong>Hosted:</strong> Make sure <code>data.json</code> is committed and pushed to GitHub.
             </p>
         </div>
     `;
